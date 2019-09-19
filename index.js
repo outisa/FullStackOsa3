@@ -1,8 +1,13 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
+const cors = require('cors')
 
 app.use(bodyParser.json())
+app.use(morgan('tiny'))
+app.use(cors())
+
 let persons = [
     {
         name: "Outi Savolainen",
@@ -65,13 +70,14 @@ const generatedId = () => {
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    if (!body.name | !body.number) {
+    if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'Name or number missing.'
         })
     }
-    const isOnList = persons.filter(person => person.name === body.name)
-    if (isOnList !== 'undefined') {
+    const isOnList = persons.find(person => person.name === body.name)
+    console.log(isOnList)
+    if (typeof isOnList !== 'undefined' ) {
         return response.status(400).json({
             error: 'Name must be unique'
         })
@@ -90,12 +96,17 @@ app.post('/api/persons', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    const person = persons.filter(person => person.id !== id)
+    persons = persons.filter(person => person.id !== id)
 
     response.status(204).end()
 })
 
-const PORT = 3001
+app.put('/api/persons/:id', (request, response) => {
+    const body = request.body
+    response.json(body)
+})
+
+const PORT =  process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
