@@ -2,4 +2,4 @@
 
 Link to the application at Heroku
 
-[part 3](https://shielded-lowlands-63797.herokuapp.com/info)
+[part 3](https://shielded-lowlands-63797.herokuapp.com/)
